@@ -1,5 +1,5 @@
 ﻿# Double-Space: This function adds 2 new line characters
-function Double-Space{
+function Add-Space{
     "`n `n"
 }
 
@@ -8,7 +8,7 @@ function Get-Info{
     param ([string[]]$PC_Info)
     $Result =""
     foreach ($info in $PC_Info){
-        $Result += $info + $(Double-Space)
+        $Result += $info + $(Add-Space)
     }
     return $Result
 
