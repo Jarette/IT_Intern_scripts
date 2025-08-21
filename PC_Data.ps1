@@ -13,6 +13,24 @@ function Get-Info{
     return $Result
 
 }
+
+# Calculating Express service Code 
+function Get-ExpressServiceCode {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$ServiceTag
+    )
+
+    # Dell service tags are base-36 (0–9, A–Z)
+    $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    $esc = 0
+
+    foreach ($c in $ServiceTag.ToUpper().ToCharArray()) {
+        $esc = ($esc * 36) + $chars.IndexOf($c)
+    }
+
+    return $esc
+}
 # write a blank line
 write-host
 
@@ -45,6 +63,10 @@ foreach ($drive in Get-CimInstance Win32_DiskDrive) {
     $sizeGB = [math]::Round($drive.Size / 1GB, 2)
     $PC_INFO.Add("Drive: $($drive.Model) : $sizeGB GB") | Out-Null
 }
+
+#Exp Service Code 
+$ServiceTag = (Get-CimInstance -ClassName Win32_BIOS).SerialNumber
+$PC_INFO.Add("Exp Service Code: $(Get-ExpressServiceCode -ServiceTag $ServiceTag)") | Out-Null
 
 # Function call to present the results of the function calls 
 Get-Info -PC_Info $PC_INFO
